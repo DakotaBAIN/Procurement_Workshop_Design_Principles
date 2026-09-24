@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>EBOS Group | Procurement Workshop</title>
+<style>
+  :root{
+    --blue:#00AEEF;
+    --blue-light:#93E2FF;
+    --grey:#D9D9D9;
+    --navy:#0B3D4C;
+    --navy-dark:#08303C;
+    --text:#1A2B32;
+    --muted:#6B7B80;
+    --bg:#F4F7F8;
+    --card-bg:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    padding-bottom:40px;
+  }
+  .header{
+    background:var(--blue);
+    color:#fff;
+    padding:20px 20px 22px;
+    border-radius:0 0 14px 14px;
+    margin-bottom:18px;
+  }
+  .header .eyebrow{
+    font-size:11px;
+    letter-spacing:1.5px;
+    font-weight:700;
+    opacity:0.9;
+    text-transform:uppercase;
+  }
+  .header h1{
+    font-size:22px;
+    margin:4px 0 6px;
+    font-weight:800;
+  }
+  .header p{
+    margin:0;
+    font-size:13.5px;
+    opacity:0.95;
+    line-height:1.4;
+  }
+  .container{
+    max-width:640px;
+    margin:0 auto;
+    padding:0 16px;
+  }
+  .instructions{
+    background:#EAF9FF;
+    border:1px solid var(--blue-light);
+    border-radius:12px;
+    padding:16px 18px;
+    margin-bottom:18px;
+  }
+  .instructions .title{
+    color:var(--blue);
+    font-weight:700;
+    font-size:14px;
+    margin-bottom:8px;
+  }
+  .instructions p{
+    margin:0 0 8px;
+    font-size:13.5px;
+    line-height:1.5;
+  }
+  .instructions ul{
+    margin:0 0 8px;
+    padding-left:18px;
+    font-size:13.5px;
+    line-height:1.6;
+  }
+  .status-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+  }
+  .pill{
+    border:1px solid var(--blue-light);
+    color:var(--blue);
+    border-radius:20px;
+    padding:6px 14px;
+    font-size:13px;
+    font-weight:700;
+    background:#fff;
+    flex:1;
+    text-align:center;
+    min-width:130px;
+  }
+  .pill.pill-done{
+    border-color:var(--blue);
+    background:var(--blue);
+    color:#fff;
+  }
+  .label{
+    font-size:11px;
+    font-weight:700;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-bottom:10px;
+  }
+
+  /* ---------- Ranking slots ---------- */
+  .slots-section{margin-bottom:22px;}
+  .slots-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .slot{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-height:60px;
+    border-radius:10px;
+    background:#fff;
+    padding:8px 10px 8px 8px;
+    border:2px dashed var(--grey);
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .slot.filled{
+    border-style:solid;
+    border-color:var(--blue-light);
+    box-shadow:0 1px 4px rgba(0,0,0,0.06);
+    padding:10px 10px 10px 8px;
+  }
+  .slot.drag-over{
+    border-color:var(--blue);
+    background:#EAF9FF;
+  }
+  .slot-num{
+    flex-shrink:0;
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:var(--navy);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    font-size:14px;
+  }
+  .slot-content{
+    flex:1;
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .slot-empty-text{
+    color:var(--muted);
+    font-size:12.5px;
+    font-style:italic;
+  }
+  .slot-tile{
+    flex:1;
+    min-width:0;
+    cursor:grab;
+    touch-action:none;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+  .slot-tile:active{cursor:grabbing;}
+  .remove-x{
+    flex-shrink:0;
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    border:none;
+    background:var(--grey);
+    color:#556066;
+    font-size:13px;
+    font-weight:800;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .pool-section{margin-bottom:20px;}
+  .pool-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .pool-tile{
+    background:var(--card-bg);
+    border-radius:10px;
+    padding:14px 16px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.06);
+    border-left:6px solid var(--blue);
+    cursor:grab;
+    touch-action:none;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+  .pool-tile:active{cursor:grabbing;}
+  .pool-empty-note{
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+    padding:10px 0 4px;
+  }
+
+  .card-title{
+    font-weight:800;
+    font-size:14px;
+    margin-bottom:3px;
+    color:var(--text);
+    line-height:1.3;
+  }
+  .card-desc{
+    font-size:12px;
+    line-height:1.4;
+    color:var(--muted);
+  }
+
+  .drag-overlay{
+    position:fixed;
+    background:#fff;
+    border-radius:10px;
+    padding:14px 16px;
+    box-shadow:0 10px 22px rgba(0,0,0,0.28);
+    border-left:6px solid var(--blue);
+    pointer-events:none;
+    z-index:1000;
+    opacity:0.98;
+  }
+
+  .btn-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .btn{
+    border:none;
+    border-radius:10px;
+    padding:14px 16px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    text-align:center;
+    width:100%;
+  }
+  .btn-secondary{
+    background:#fff;
+    border:1px solid var(--blue-light);
+    color:var(--blue);
+  }
+  .btn-primary{
+    background:var(--blue);
+    color:#fff;
+  }
+  .btn-primary:disabled{
+    background:var(--grey);
+    color:#8a9296;
+    cursor:not-allowed;
+  }
+  .reminder{
+    text-align:center;
+    font-size:12px;
+    color:var(--muted);
+    margin:10px 0 14px;
+    line-height:1.4;
+  }
+  .link-row{
+    text-align:center;
+    margin:14px 0;
+  }
+  .link-row a{
+    color:var(--muted);
+    font-size:12.5px;
+    text-decoration:underline;
+    cursor:pointer;
+  }
+  hr.sep{
+    border:none;
+    border-top:1px solid var(--grey);
+    margin:18px 0;
+  }
+  .screen{display:none;}
+  .screen.active{display:block;}
+  /* Confirmation */
+  .confirm-box{
+    background:#fff;
+    border-radius:12px;
+    padding:32px 20px;
+    text-align:center;
+    box-shadow:0 1px 4px rgba(0,0,0,0.06);
+    margin-top:10px;
+  }
+  .confirm-box .check{
+    font-size:44px;
+    margin-bottom:10px;
+  }
+  .confirm-box h2{
+    margin:0 0 8px;
+    font-size:18px;
+    color:var(--navy);
+  }
+  .confirm-box p{
+    margin:0;
+    font-size:14px;
+    color:var(--muted);
+  }
+  /* Facilitator access */
+  .access-box{
+    background:#fff;
+    border-radius:12px;
+    padding:30px 24px;
+    margin-top:40px;
+    text-align:center;
+    box-shadow:0 1px 4px rgba(0,0,0,0.06);
+  }
+  .access-box h2{
+    margin:0 0 8px;
+    font-size:19px;
+    color:var(--navy);
+    font-weight:800;
+  }
+  .access-box p{
+    margin:0 0 18px;
+    font-size:13.5px;
+    color:var(--muted);
+  }
+  .access-box input{
+    width:100%;
+    padding:13px 14px;
+    border:1px solid var(--grey);
+    border-radius:8px;
+    font-size:15px;
+    margin-bottom:16px;
+    text-align:center;
+    letter-spacing:1px;
+  }
+  .access-box .btns{
+    display:flex;
+    gap:10px;
+  }
+  .error-msg{
+    color:#D63838;
+    font-size:12.5px;
+    margin-top:-8px;
+    margin-bottom:12px;
+    display:none;
+  }
+  /* Results */
+  .results-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:6px;
+    flex-wrap:wrap;
+  }
+  .results-header h1{
+    font-size:20px;
+    color:var(--navy);
+    margin:0;
+    font-weight:800;
+  }
+  .badge-grey{
+    background:var(--grey);
+    color:#556066;
+    font-size:11px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:12px;
+  }
+  .total-count{
+    font-size:14px;
+    color:var(--muted);
+    margin-bottom:18px;
+  }
+  .total-count b{color:var(--navy);}
+  .section-label{
+    font-size:12px;
+    font-weight:800;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.6px;
+    margin:22px 0 10px;
+  }
+  .final-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:8px;
+  }
+  .final-item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:var(--navy);
+    color:#fff;
+    border-radius:10px;
+    padding:12px 16px;
+    border-left:6px solid var(--blue-light);
+  }
+  .final-item .rank-num{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:var(--blue);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    flex-shrink:0;
+    color:#fff;
+  }
+  .final-item .fi-title{font-weight:700;font-size:14px;}
+  .final-item .fi-avg{font-size:12px;opacity:0.85;margin-top:2px;}
+  table.summary{
+    width:100%;
+    border-collapse:collapse;
+    background:#fff;
+    border-radius:10px;
+    overflow:hidden;
+    font-size:12.5px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.06);
+  }
+  table.summary th{
+    background:var(--navy);
+    color:#fff;
+    text-align:left;
+    padding:9px 8px;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.3px;
+  }
+  table.summary td{
+    padding:9px 8px;
+    border-bottom:1px solid #EEF1F2;
+    vertical-align:middle;
+  }
+  table.summary tr:last-child td{border-bottom:none;}
+  .dist-bars{
+    display:flex;
+    gap:2px;
+    align-items:flex-end;
+    height:26px;
+  }
+  .dist-bar{
+    width:10px;
+    background:var(--blue-light);
+    border-radius:2px 2px 0 0;
+    position:relative;
+  }
+  .dist-bar.has-val{background:var(--blue);}
+  .dist-bar .n{
+    position:absolute;
+    top:-14px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:9px;
+    color:var(--muted);
+  }
+  .refresh-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:22px 0 6px;
+  }
+  .small-link{
+    font-size:12px;
+    color:var(--muted);
+    text-decoration:underline;
+    cursor:pointer;
+    background:none;
+    border:none;
+    padding:0;
+  }
+  .reset-row{
+    margin-top:34px;
+    text-align:center;
+  }
+  .reset-btn{
+    background:none;
+    border:1px solid var(--grey);
+    color:#9AA5A9;
+    font-size:11px;
+    padding:6px 12px;
+    border-radius:14px;
+    cursor:pointer;
+  }
+  .back-link{
+    display:inline-block;
+    margin-bottom:16px;
+    font-size:12.5px;
+    color:var(--muted);
+    cursor:pointer;
+    text-decoration:underline;
+  }
+  .loading-note{
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+    padding:30px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ============ VOTE SCREEN ============ -->
+  <div id="screen-vote" class="screen active">
+    <div class="header">
+      <div class="eyebrow">EBOS Group</div>
+      <h1>Procurement Workshop</h1>
+      <p>Exercise 3: Order the operating model design principles from most to least important</p>
+    </div>
+
+    <div class="instructions">
+      <div class="title">Instructions</div>
+      <p>The ranking slots (1–6) are shown below. Drag each card up from the list underneath into the slot that matches your view.</p>
+      <ul>
+        <li>Slot 1 = most important, slot 6 = least important</li>
+        <li>Changed your mind? Drag a placed card into a different slot to move it, or tap the × to send it back to the list</li>
+        <li>You can also drag one placed card onto another to swap them</li>
+      </ul>
+      <p style="margin-bottom:0;">When all six slots are filled, hit Submit.</p>
+    </div>
+
+    <div class="status-row">
+      <div class="pill" id="progress-pill">0 of 6 placed</div>
+    </div>
+
+    <div class="slots-section">
+      <div class="label">Your ranking</div>
+      <div class="slots-list" id="slots-list"></div>
+    </div>
+
+    <div class="pool-section">
+      <div class="label" id="pool-label">Drag from here</div>
+      <div class="pool-list" id="pool-list"></div>
+      <div class="pool-empty-note" id="pool-empty-note" style="display:none;">All cards have been placed — check your order above.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="reset-btn">Reset order</button>
+    </div>
+
+    <button class="btn btn-primary" id="submit-btn" disabled>Submit my picks</button>
+    <div class="reminder">Choices cannot be edited once submitted — double check before you submit.</div>
+
+    <div class="link-row">
+      <a id="to-facilitator-link">Facilitator / Results</a>
+    </div>
+  </div>
+
+  <!-- ============ CONFIRMATION SCREEN ============ -->
+  <div id="screen-confirm" class="screen">
+    <div class="header">
+      <div class="eyebrow">EBOS Group</div>
+      <h1>Procurement Workshop</h1>
+      <p>Exercise 3: Operating model design principles</p>
+    </div>
+    <div class="confirm-box">
+      <div class="check">✅</div>
+      <h2>Thanks — your ranking has been recorded.</h2>
+      <p>You can close this window, or wait for the facilitator to share the group results.</p>
+    </div>
+    <div class="link-row">
+      <a id="confirm-to-facilitator-link">Facilitator / Results</a>
+    </div>
+  </div>
+
+  <!-- ============ FACILITATOR PASSCODE SCREEN ============ -->
+  <div id="screen-passcode" class="screen">
+    <span class="back-link" id="passcode-back-link">← Back</span>
+    <div class="access-box">
+      <h2>Facilitator Access</h2>
+      <p>Enter the facilitator passcode to view results.</p>
+      <input type="password" id="passcode-input" placeholder="Passcode" inputmode="text">
+      <div class="error-msg" id="passcode-error">Incorrect passcode. Please try again.</div>
+      <div class="btns">
+        <button class="btn btn-secondary" id="passcode-back-btn">Back</button>
+        <button class="btn btn-primary" id="passcode-enter-btn">Enter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ RESULTS SCREEN ============ -->
+  <div id="screen-results" class="screen">
+    <div class="header">
+      <div class="eyebrow">EBOS Group</div>
+      <h1>Procurement Workshop</h1>
+      <p>Exercise 3 Results: Operating model design principles</p>
+    </div>
+
+    <div class="results-header">
+      <h1 style="font-size:16px;">Results</h1>
+      <span class="badge-grey">not visible to participants</span>
+    </div>
+    <div class="total-count" id="total-count-line">Loading…</div>
+
+    <div id="results-body">
+      <div class="loading-note">Loading results…</div>
+    </div>
+
+    <div class="refresh-row">
+      <button class="small-link" id="refresh-results-btn">↻ Refresh results</button>
+      <span></span>
+    </div>
+
+    <div class="reset-row">
+      <button class="reset-btn" id="reset-results-btn">Reset results</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+
+  const PRINCIPLES = [
+    {id:"standardise", title:"Standardise by default, flex by exception", desc:"Design a modular procurement model that scales across acquisitions, with variation permitted when justified by the investment thesis."},
+    {id:"centre_value", title:"Centre operates as a value-adding service", desc:"Owning initiatives that don't have a natural BU leader such as post M&A integration, group procurement strategy, and governance."},
+    {id:"segment_indirect", title:"Segment indirect spend into tiered levels of centralisation", desc:"Centralise indirect spend (fully centralised, centre-led, or BU-led) unless highly BU-specific or immaterial at the group level."},
+    {id:"direct_embedded", title:"Keep direct spend accountability embedded in the BUs", desc:"Align procurement roles and accountabilities to where they drive the greatest commercial and operational impact."},
+    {id:"transparency", title:"Drive transparency and digitisation", desc:"Group responsible for delivering cross-BU spend transparency and tech initiatives to deliver efficient, repeatable, and automated processes."},
+    {id:"build_once", title:"Build capabilities once, then deploy across BUs", desc:"Consolidate effort to improve procurement effectiveness before deploying across the group, rather than duplicating efforts in each BU."}
+  ];
+
+  const PASSCODE = "procurement2026";
+  const BACKEND_URL = "https://defaulteb120e1265f1477abe8cfe4f659267.24.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/ff1141c685984d388db24cf624187281/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=4xaR6FFi1ZiYpfFRHJ72xYf2eDxrJFVNVdkvveVB2xo";
+  const MY_PROGRESS_KEY = "ex3_my_progress"; // personal in-progress ranking (local only)
+  const SUBMITTED_FLAG_KEY = "ex3_submitted"; // personal flag: have I already submitted?
+  const PARTICIPANT_ID_KEY = "ex3_participant_id"; // personal, stable per device/browser
+
+  let slots = new Array(PRINCIPLES.length).fill(null); // slots[i] = principle id placed in rank i+1, or null
+  let pool = PRINCIPLES.map(p => p.id); // ids not yet placed, in display order
+  let hasSubmitted = false;
+  let dragState = null;
+
+  const screens = {
+    vote: document.getElementById('screen-vote'),
+    confirm: document.getElementById('screen-confirm'),
+    passcode: document.getElementById('screen-passcode'),
+    results: document.getElementById('screen-results'),
+  };
+
+  function showScreen(name){
+    Object.values(screens).forEach(s=>s.classList.remove('active'));
+    screens[name].classList.add('active');
+  }
+
+  // ---------- Storage helpers ----------
+  async function storageGet(key, shared){
+    try{
+      const res = await window.storage.get(key, shared);
+      return res ? res.value : null;
+    }catch(e){
+      return null;
+    }
+  }
+  async function storageSet(key, value, shared){
+    try{
+      await window.storage.set(key, value, shared);
+    }catch(e){
+      console.error('storage set failed', key, e);
+    }
+  }
+  async function storageDelete(key, shared){
+    try{
+      await window.storage.delete(key, shared);
+    }catch(e){ /* ignore */ }
+  }
+
+  // ---------- Backend (Power Automate) helpers ----------
+  async function callBackend(payload){
+    const res = await fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if(!res.ok){
+      throw new Error('Backend returned ' + res.status);
+    }
+    return res.json();
+  }
+
+  async function getParticipantId(){
+    let id = await storageGet(PARTICIPANT_ID_KEY, false);
+    if(!id){
+      id = 'p_' + Math.random().toString(36).slice(2, 10);
+      await storageSet(PARTICIPANT_ID_KEY, id, false);
+    }
+    return id;
+  }
+
+  // ---------- Elements ----------
+  const slotsListEl = document.getElementById('slots-list');
+  const poolListEl = document.getElementById('pool-list');
+  const poolLabelEl = document.getElementById('pool-label');
+  const poolEmptyNoteEl = document.getElementById('pool-empty-note');
+  const progressPillEl = document.getElementById('progress-pill');
+  const submitBtn = document.getElementById('submit-btn');
+  const resetBtn = document.getElementById('reset-btn');
+
+  function principleFor(id){
+    return PRINCIPLES.find(p => p.id === id);
+  }
+
+  // ---------- Rendering ----------
+  function renderSlots(){
+    slotsListEl.innerHTML = '';
+    slots.forEach((id, idx)=>{
+      const slot = document.createElement('div');
+      slot.className = 'slot' + (id ? ' filled' : '');
+      slot.dataset.index = idx;
+
+      const num = document.createElement('div');
+      num.className = 'slot-num';
+      num.textContent = idx + 1;
+      slot.appendChild(num);
+
+      const content = document.createElement('div');
+      content.className = 'slot-content';
+
+      if(id){
+        const p = principleFor(id);
+        const tile = document.createElement('div');
+        tile.className = 'slot-tile';
+        tile.dataset.id = id;
+        tile.innerHTML = `<div class="card-title">${p.title}</div><div class="card-desc">${p.desc}</div>`;
+        tile.addEventListener('pointerdown', (e)=>onTileDown(e, id, {type:'slot', index: idx}, tile));
+        content.appendChild(tile);
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-x';
+        removeBtn.setAttribute('aria-label', 'Remove from ranking');
+        removeBtn.textContent = '×';
+        removeBtn.addEventListener('click', ()=>{
+          moveTile(id, {type:'slot', index: idx}, null);
+          renderAll();
+          persist();
+        });
+        content.appendChild(removeBtn);
+      }else{
+        const emptyText = document.createElement('div');
+        emptyText.className = 'slot-empty-text';
+        emptyText.textContent = 'Drag a card here';
+        content.appendChild(emptyText);
+      }
+
+      slot.appendChild(content);
+      slotsListEl.appendChild(slot);
+    });
+  }
+
+  function renderPool(){
+    poolListEl.innerHTML = '';
+    pool.forEach(id=>{
+      const p = principleFor(id);
+      const tile = document.createElement('div');
+      tile.className = 'pool-tile';
+      tile.dataset.id = id;
+      tile.innerHTML = `<div class="card-title">${p.title}</div><div class="card-desc">${p.desc}</div>`;
+      tile.addEventListener('pointerdown', (e)=>onTileDown(e, id, {type:'pool'}, tile));
+      poolListEl.appendChild(tile);
+    });
+    const allPlaced = pool.length === 0;
+    poolLabelEl.style.display = allPlaced ? 'none' : 'block';
+    poolListEl.style.display = allPlaced ? 'none' : 'flex';
+    poolEmptyNoteEl.style.display = allPlaced ? 'block' : 'none';
+  }
+
+  function updateStatus(){
+    const placed = slots.filter(Boolean).length;
+    progressPillEl.textContent = `${placed} of ${PRINCIPLES.length} placed`;
+    const done = placed === PRINCIPLES.length;
+    progressPillEl.classList.toggle('pill-done', done);
+    submitBtn.disabled = !done;
+  }
+
+  function renderAll(){
+    renderSlots();
+    renderPool();
+    updateStatus();
+  }
+
+  function persist(){
+    storageSet(MY_PROGRESS_KEY, JSON.stringify({slots, pool}), false);
+  }
+
+  // ---------- Move logic ----------
+  function moveTile(id, source, targetIdx){
+    // targetIdx: 0..N-1 for a slot, or null for the pool
+    let displaced = null;
+    if(targetIdx !== null){
+      displaced = slots[targetIdx];
+      if(displaced === id) return; // dropped back onto its own slot, no-op
+    }
+
+    // remove id from its current location
+    if(source.type === 'slot'){
+      slots[source.index] = null;
+    }else{
+      pool = pool.filter(pid => pid !== id);
+    }
+
+    // put any displaced occupant into id's old location
+    if(displaced){
+      if(source.type === 'slot'){
+        slots[source.index] = displaced;
+      }else{
+        pool.push(displaced);
+      }
+    }
+
+    // place id into its target
+    if(targetIdx !== null){
+      slots[targetIdx] = id;
+    }else{
+      pool.push(id);
+    }
+  }
+
+  // ---------- Drag interaction ----------
+  function createOverlay(id, rect){
+    const p = principleFor(id);
+    const overlay = document.createElement('div');
+    overlay.className = 'drag-overlay';
+    overlay.style.top = rect.top + 'px';
+    overlay.style.left = rect.left + 'px';
+    overlay.style.width = rect.width + 'px';
+    overlay.innerHTML = `<div class="card-title">${p.title}</div><div class="card-desc">${p.desc}</div>`;
+    document.body.appendChild(overlay);
+    return overlay;
+  }
+
+  function getSlotIndexAt(x, y){
+    const slotEls = Array.from(slotsListEl.querySelectorAll('.slot'));
+    for(let i=0;i<slotEls.length;i++){
+      const r = slotEls[i].getBoundingClientRect();
+      if(x >= r.left && x <= r.right && y >= r.top && y <= r.bottom){
+        return i;
+      }
+    }
+    return null;
+  }
+
+  function highlightSlot(idx){
+    const slotEls = Array.from(slotsListEl.querySelectorAll('.slot'));
+    slotEls.forEach((el, i)=>{
+      el.classList.toggle('drag-over', i === idx);
+    });
+  }
+
+  function clearHighlights(){
+    slotsListEl.querySelectorAll('.slot').forEach(el => el.classList.remove('drag-over'));
+  }
+
+  function onTileDown(e, id, source, el){
+    e.preventDefault();
+    const rect = el.getBoundingClientRect();
+    const overlay = createOverlay(id, rect);
+    el.style.opacity = '0.25';
+
+    dragState = {
+      id, source, el, overlay,
+      startX: e.clientX, startY: e.clientY,
+      origLeft: rect.left, origTop: rect.top,
+    };
+
+    try{ el.setPointerCapture(e.pointerId); }catch(err){}
+    el.addEventListener('pointermove', onTileMove);
+    el.addEventListener('pointerup', onTileUp);
+    el.addEventListener('pointercancel', onTileCancel);
+  }
+
+  function onTileMove(e){
+    if(!dragState) return;
+    const dx = e.clientX - dragState.startX;
+    const dy = e.clientY - dragState.startY;
+    dragState.overlay.style.left = (dragState.origLeft + dx) + 'px';
+    dragState.overlay.style.top = (dragState.origTop + dy) + 'px';
+    highlightSlot(getSlotIndexAt(e.clientX, e.clientY));
+  }
+
+  function cleanupDrag(){
+    if(!dragState) return;
+    dragState.el.removeEventListener('pointermove', onTileMove);
+    dragState.el.removeEventListener('pointerup', onTileUp);
+    dragState.el.removeEventListener('pointercancel', onTileCancel);
+    dragState.overlay.remove();
+    clearHighlights();
+    dragState = null;
+  }
+
+  function onTileUp(e){
+    if(!dragState) return;
+    const { id, source } = dragState;
+    const targetIdx = getSlotIndexAt(e.clientX, e.clientY);
+    cleanupDrag();
+    moveTile(id, source, targetIdx);
+    renderAll();
+    persist();
+  }
+
+  function onTileCancel(){
+    cleanupDrag();
+    renderAll();
+  }
+
+  resetBtn.addEventListener('click', ()=>{
+    slots = new Array(PRINCIPLES.length).fill(null);
+    pool = PRINCIPLES.map(p => p.id);
+    renderAll();
+    persist();
+  });
+
+  submitBtn.addEventListener('click', async ()=>{
+    if(slots.some(s => !s)) return;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+    try{
+      const participantId = await getParticipantId();
+      const rankings = slots.map((id, idx) => ({ principleId: id, rank: idx + 1 }));
+
+      await callBackend({
+        action: 'submit',
+        participantId,
+        timestamp: new Date().toISOString(),
+        rankings
+      });
+
+      await storageSet(SUBMITTED_FLAG_KEY, 'true', false);
+      await storageDelete(MY_PROGRESS_KEY, false);
+      hasSubmitted = true;
+      showScreen('confirm');
+    }catch(e){
+      console.error(e);
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit my picks';
+      alert('Something went wrong submitting your picks. Please try again.');
+    }
+  });
+
+  document.getElementById('to-facilitator-link').addEventListener('click', ()=>{
+    showScreen('passcode');
+  });
+  document.getElementById('confirm-to-facilitator-link').addEventListener('click', ()=>{
+    showScreen('passcode');
+  });
+
+  // ---------- Passcode screen ----------
+  const passcodeInput = document.getElementById('passcode-input');
+  const passcodeError = document.getElementById('passcode-error');
+
+  function tryEnterPasscode(){
+    if(passcodeInput.value === PASSCODE){
+      passcodeError.style.display = 'none';
+      passcodeInput.value = '';
+      loadAndShowResults();
+    }else{
+      passcodeError.style.display = 'block';
+    }
+  }
+
+  document.getElementById('passcode-enter-btn').addEventListener('click', tryEnterPasscode);
+  passcodeInput.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter') tryEnterPasscode();
+  });
+  document.getElementById('passcode-back-btn').addEventListener('click', ()=>{
+    passcodeInput.value='';
+    passcodeError.style.display='none';
+    showScreen(hasSubmitted ? 'confirm' : 'vote');
+  });
+  document.getElementById('passcode-back-link').addEventListener('click', ()=>{
+    passcodeInput.value='';
+    passcodeError.style.display='none';
+    showScreen(hasSubmitted ? 'confirm' : 'vote');
+  });
+
+  // ---------- Results screen ----------
+  const resultsBody = document.getElementById('results-body');
+  const totalCountLine = document.getElementById('total-count-line');
+
+  async function fetchAllResponses(){
+    const rows = await callBackend({ action: 'getResults' });
+    const rowList = Array.isArray(rows) ? rows : [];
+
+    // Group flat rows (one per principle per submission) back into one order[] per participant
+    const byParticipant = {};
+    rowList.forEach(row=>{
+      const pid = row.ParticipantId;
+      const principleId = row.PrincipleId;
+      const rank = Number(row.Rank);
+      if(!pid || !principleId || !Number.isFinite(rank)) return;
+      if(!byParticipant[pid]) byParticipant[pid] = [];
+      byParticipant[pid].push({ principleId, rank });
+    });
+
+    const responses = [];
+    Object.values(byParticipant).forEach(entries=>{
+      if(entries.length !== PRINCIPLES.length) return; // incomplete/partial submission — skip
+      entries.sort((a,b)=>a.rank - b.rank);
+      const order = entries.map(e=>e.principleId);
+      const uniqueValid = new Set(order).size === PRINCIPLES.length &&
+        order.every(id => PRINCIPLES.some(p=>p.id===id));
+      if(uniqueValid){
+        responses.push(order);
+      }
+    });
+    return responses;
+  }
+
+  function computeStats(responses){
+    const n = responses.length;
+    const stats = {};
+    PRINCIPLES.forEach(p=>{
+      stats[p.id] = {
+        id: p.id,
+        title: p.title,
+        sumRank: 0,
+        count: 0,
+        rankCounts: [0,0,0,0,0,0] // index 0 = rank1 ... index5 = rank6
+      };
+    });
+    responses.forEach(order=>{
+      order.forEach((id, idx)=>{
+        const rank = idx + 1;
+        if(stats[id]){
+          stats[id].sumRank += rank;
+          stats[id].count += 1;
+          stats[id].rankCounts[idx] += 1;
+        }
+      });
+    });
+    const list = Object.values(stats).map(s=>({
+      ...s,
+      avgRank: s.count > 0 ? (s.sumRank / s.count) : null
+    }));
+    return {n, list};
+  }
+
+  function renderResults({n, list}){
+    totalCountLine.innerHTML = `<b>${n}</b> participant${n===1?'':'s'} submitted`;
+
+    if(n === 0){
+      resultsBody.innerHTML = '<div class="loading-note">No submissions yet. Results will appear here as participants submit.</div>';
+      return;
+    }
+
+    // sort by avg rank ascending (lowest = most important); ties broken by #1 votes desc
+    const sorted = [...list].sort((a,b)=>{
+      if(a.avgRank === null) return 1;
+      if(b.avgRank === null) return -1;
+      if(a.avgRank !== b.avgRank) return a.avgRank - b.avgRank;
+      return b.rankCounts[0] - a.rankCounts[0];
+    });
+
+    let html = '';
+
+    // Final ranking
+    html += '<div class="section-label">Combined ranking (most → least important)</div>';
+    html += '<div class="final-list">';
+    sorted.forEach((s, idx)=>{
+      html += `
+        <div class="final-item">
+          <div class="rank-num">${idx+1}</div>
+          <div>
+            <div class="fi-title">${s.title}</div>
+            <div class="fi-avg">Average rank: ${s.avgRank.toFixed(1)}</div>
+          </div>
+        </div>
+      `;
+    });
+    html += '</div>';
+
+    // Summary table
+    html += '<div class="section-label">Summary detail</div>';
+    html += `<table class="summary">
+      <thead>
+        <tr>
+          <th>Principle</th>
+          <th>Avg rank</th>
+          <th># ranked #1</th>
+          <th>Rank distribution (1→6)</th>
+          <th>Included</th>
+        </tr>
+      </thead>
+      <tbody>`;
+    sorted.forEach(s=>{
+      const maxCount = Math.max(1, ...s.rankCounts);
+      const barsHtml = s.rankCounts.map((c, i)=>{
+        const h = c === 0 ? 3 : Math.max(6, Math.round((c/maxCount)*22));
+        return `<div class="dist-bar ${c>0?'has-val':''}" style="height:${h}px;" title="Rank ${i+1}: ${c}"><span class="n">${c>0?c:''}</span></div>`;
+      }).join('');
+      html += `
+        <tr>
+          <td>${s.title}</td>
+          <td><b>${s.avgRank !== null ? s.avgRank.toFixed(1) : '—'}</b></td>
+          <td>${s.rankCounts[0]}</td>
+          <td><div class="dist-bars">${barsHtml}</div></td>
+          <td>${s.count} / ${n}</td>
+        </tr>
+      `;
+    });
+    html += '</tbody></table>';
+
+    resultsBody.innerHTML = html;
+  }
+
+  async function loadAndShowResults(){
+    showScreen('results');
+    resultsBody.innerHTML = '<div class="loading-note">Loading results…</div>';
+    totalCountLine.textContent = 'Loading…';
+    try{
+      const responses = await fetchAllResponses();
+      const stats = computeStats(responses);
+      renderResults(stats);
+    }catch(e){
+      console.error(e);
+      totalCountLine.textContent = '';
+      resultsBody.innerHTML = '<div class="loading-note">Could not reach the backend. Check the console for details, then try Refresh.</div>';
+    }
+  }
+
+  document.getElementById('refresh-results-btn').addEventListener('click', loadAndShowResults);
+
+  document.getElementById('reset-results-btn').addEventListener('click', async ()=>{
+    const confirmed = confirm('This will permanently clear all submitted rankings for this workshop session. Continue?');
+    if(!confirmed) return;
+    try{
+      await callBackend({ action: 'clear' });
+    }catch(e){
+      console.error(e);
+      alert('Could not clear results — check the console for details.');
+    }
+    await loadAndShowResults();
+  });
+
+  // ---------- Init ----------
+  async function init(){
+    const submittedFlag = await storageGet(SUBMITTED_FLAG_KEY, false);
+    if(submittedFlag === 'true'){
+      hasSubmitted = true;
+      showScreen('confirm');
+      return;
+    }
+    const savedProgress = await storageGet(MY_PROGRESS_KEY, false);
+    if(savedProgress){
+      try{
+        const parsed = JSON.parse(savedProgress);
+        if(parsed && Array.isArray(parsed.slots) && Array.isArray(parsed.pool)){
+          const validSlots = parsed.slots.map(id => (id && PRINCIPLES.some(p=>p.id===id)) ? id : null);
+          const placedIds = validSlots.filter(Boolean);
+          const validPool = parsed.pool.filter(id => PRINCIPLES.some(p=>p.id===id) && !placedIds.includes(id));
+          // make sure every principle appears exactly once across slots+pool
+          const accountedFor = new Set([...placedIds, ...validPool]);
+          const missing = PRINCIPLES.map(p=>p.id).filter(id => !accountedFor.has(id));
+          if(validSlots.length === PRINCIPLES.length && missing.length === 0){
+            slots = validSlots;
+            pool = [...validPool, ...missing];
+          }
+        }
+      }catch(e){ /* ignore, use defaults */ }
+    }
+    renderAll();
+    showScreen('vote');
+  }
+
+  init();
+
+})();
+</script>
+
+</body>
+</html>
